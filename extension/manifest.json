@@ -14,7 +14,7 @@
     "windows"
   ],
   "host_permissions": [
-    "http://localhost:8000/*",
+    "http://https://website-content-and-time-analyzer.onrender.com/*",
     "https://api.ipify.org/*",
     "<all_urls>"
   ],
