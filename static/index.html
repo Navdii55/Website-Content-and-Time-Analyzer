@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="ContentTrack Admin Dashboard — Track and analyze website usage for every extension user.">
+    <title>ContentTrack — Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <div class="logo-icon">📡</div>
+            <div>
+                <h2 class="logo-title">ContentTrack</h2>
+                <p class="logo-subtitle">Admin Dashboard</p>
+            </div>
+        </div>
+
+        <nav class="nav-menu" id="nav-menu">
+            <a href="#" class="nav-item active" id="nav-dashboard" data-view="dashboard">
+                <span class="nav-icon">📊</span> Dashboard
+            </a>
+            <a href="#" class="nav-item" id="nav-users" data-view="users">
+                <span class="nav-icon">👥</span> Users
+            </a>
+            <a href="#" class="nav-item" id="nav-reports" data-view="reports">
+                <span class="nav-icon">📋</span> Reports
+            </a>
+            <a href="#" class="nav-item" id="nav-timeline" data-view="timeline">
+                <span class="nav-icon">🕐</span> Timeline
+            </a>
+            <a href="#" class="nav-item" id="nav-settings" data-view="settings">
+                <span class="nav-icon">⚙️</span> Settings
+            </a>
+        </nav>
+
+        <div class="user-profile">
+            <div class="avatar">AD</div>
+            <div class="user-info">
+                <span class="user-name">Admin</span>
+                <span class="user-email">admin@contenttrack.io</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ====== MAIN ====== -->
+    <main class="main-content">
+
+        <!-- ===== VIEW: DASHBOARD ===== -->
+        <div id="view-dashboard" class="view active-view">
+            <header class="top-header">
+                <div class="header-titles">
+                    <span class="breadcrumbs">Overview</span>
+                    <h1>Dashboard</h1>
+                    <p>All-user website content usage at a glance</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                    <span id="last-refresh" style="font-size:12px;color:var(--text-muted);"></span>
+                    <div class="status-badge">
+                        <span class="status-dot pulse"></span>
+                        <span id="status-text">Loading...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <section class="kpi-grid" id="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon purple">👥</div>
+                    <div class="kpi-data">
+                        <p>Total Users</p>
+                        <h3 id="kpi-users">--</h3>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon green">🟢</div>
+                    <div class="kpi-data">
+                        <p>Online Now</p>
+                        <h3 id="kpi-online">--</h3>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon teal">⏱️</div>
+                    <div class="kpi-data">
+                        <p>Combined Time</p>
+                        <h3 id="kpi-time">--</h3>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon orange">🌐</div>
+                    <div class="kpi-data">
+                        <p>Total Websites</p>
+                        <h3 id="kpi-websites">--</h3>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon blue">📄</div>
+                    <div class="kpi-data">
+                        <p>Pages Tracked</p>
+                        <h3 id="kpi-pages">--</h3>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon pink">🖱️</div>
+                    <div class="kpi-data">
+                        <p>Total Clicks</p>
+                        <h3 id="kpi-clicks">--</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Summary Table -->
+            <section class="table-section">
+                <div class="table-header">
+                    <h2>Active Extension Users</h2>
+                    <input type="text" id="search-input" class="search-box" placeholder="🔍  Search by email...">
+                </div>
+                <table class="data-table" id="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>EMAIL ID</th>
+                            <th>IP ADDRESS</th>
+                            <th>TOTAL TIME</th>
+                            <th>WEBSITES</th>
+                            <th>PAGES</th>
+                            <th>CLICKS</th>
+                            <th>SCROLL DEPTH</th>
+                            <th>STATUS</th>
+                            <th>VIEW DETAILS</th>
+                            <th>DOWNLOAD REPORT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- ===== VIEW: USERS ===== -->
+        <div id="view-users" class="view">
+            <header class="top-header">
+                <div class="header-titles">
+                    <span class="breadcrumbs">Management</span>
+                    <h1>Users</h1>
+                    <p>All email accounts with active extension installations</p>
+                </div>
+            </header>
+            <section class="cards-grid" id="users-cards-grid">
+                <!-- filled by JS -->
+            </section>
+        </div>
+
+        <!-- ===== VIEW: REPORTS ===== -->
+        <div id="view-reports" class="view">
+            <header class="top-header">
+                <div class="header-titles">
+                    <span class="breadcrumbs">Analysis</span>
+                    <h1>Reports</h1>
+                    <p>Download PDF content analysis reports for individual users</p>
+                </div>
+            </header>
+            <section class="table-section">
+                <div class="table-header">
+                    <h2>Report Center</h2>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>USER</th>
+                            <th>EMAIL</th>
+                            <th>IP ADDRESS</th>
+                            <th>TOTAL TIME</th>
+                            <th>WEBSITES</th>
+                            <th>PAGES</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reports-table-body"></tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- ===== VIEW: TIMELINE ===== -->
+        <div id="view-timeline" class="view">
+            <header class="top-header">
+                <div class="header-titles">
+                    <span class="breadcrumbs">History</span>
+                    <h1>Timeline</h1>
+                    <p>Chronological content activity across all users</p>
+                </div>
+            </header>
+            <section class="timeline-section" id="timeline-section">
+                <!-- filled by JS -->
+            </section>
+        </div>
+
+        <!-- ===== VIEW: SETTINGS ===== -->
+        <div id="view-settings" class="view">
+            <header class="top-header">
+                <div class="header-titles">
+                    <span class="breadcrumbs">Configuration</span>
+                    <h1>Settings</h1>
+                    <p>Extension and tracker configuration</p>
+                </div>
+            </header>
+            <section class="settings-section">
+                <div class="settings-card">
+                    <h3>🔌 Extension Configuration</h3>
+                    <div class="settings-row">
+                        <label>Tracking Interval</label>
+                        <select id="setting-interval" class="settings-select">
+                            <option value="60" selected>Every 60 seconds (default)</option>
+                            <option value="30">Every 30 seconds</option>
+                            <option value="120">Every 2 minutes</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label>Scroll Depth Tracking</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="setting-scroll" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <label>Click Event Tracking</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="setting-clicks" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <label>Page Visit Tracking</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="setting-pages" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <label>Bounce Rate Analysis</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="setting-bounce" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <button class="btn-save" id="btn-save-settings">💾 Save Settings</button>
+                </div>
+                <div class="settings-card">
+                    <h3>📤 Data Export</h3>
+                    <p class="settings-desc">Export all tracked data for archival or external analysis.</p>
+                    <button class="btn-export" id="btn-export-all">📥 Export All User Data (JSON)</button>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- ====== USER DETAIL MODAL ====== -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal-box">
+            <button class="modal-close" id="modal-close-btn">✕</button>
+            <div class="modal-header">
+                <div class="modal-avatar" id="modal-avatar">JD</div>
+                <div>
+                    <h2 id="modal-name">John Doe</h2>
+                    <p id="modal-email">john.doe@gmail.com</p>
+                    <p id="modal-ip" style="font-size:12px;color:var(--text-muted);margin-top:2px;"></p>
+                </div>
+                <span class="status-chip" id="modal-status">Online</span>
+            </div>
+
+            <div class="modal-stats-grid" id="modal-stats-grid">
+                <!-- filled by JS -->
+            </div>
+
+            <h3 class="modal-section-title">Per-Website Breakdown</h3>
+            <div id="modal-site-list" class="modal-site-list">
+                <!-- filled by JS -->
+            </div>
+
+            <h3 class="modal-section-title" id="modal-pv-title" style="margin-top:18px;">Recent Page Visits</h3>
+            <div id="modal-page-visits" class="modal-site-list">
+                <!-- filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

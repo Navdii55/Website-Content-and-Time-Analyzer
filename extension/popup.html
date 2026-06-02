@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentTrack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 320px;
+      font-family: 'Inter', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
+      padding: 16px 18px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-icon { font-size: 22px; }
+    .header h1  { font-size: 16px; font-weight: 700; color: #fff; }
+    .header p   { font-size: 11px; color: rgba(255,255,255,0.75); }
+
+    /* Status dot */
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px 0;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+    .dot.offline { background: #6b7280; animation: none; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* Identity card (auto-fetched email) */
+    .section { padding: 14px 18px; }
+    .section label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 6px;
+    }
+
+    .identity-card {
+      background: #1e2333;
+      border: 1px solid #2d3748;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .identity-email {
+      font-size: 13px;
+      font-weight: 600;
+      color: #a78bfa;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .identity-ip {
+      font-size: 10px;
+      color: #64748b;
+      margin-top: 3px;
+    }
+    .identity-badge {
+      background: #16a34a;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .identity-badge.pending {
+      background: #d97706;
+    }
+
+    /* Fallback manual email input (hidden by default, shown if identity fails) */
+    .fallback-section {
+      padding: 0 18px 10px;
+      display: none;
+    }
+    .fallback-section.visible { display: block; }
+    .input-row { display: flex; gap: 6px; }
+    input[type=email], input[type=text] {
+      flex: 1;
+      background: #1e2333;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input:focus { border-color: #7c3aed; }
+    .btn-set {
+      background: #7c3aed;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      transition: background .2s;
+    }
+    .btn-set:hover { background: #6d28d9; }
+    .fallback-toggle {
+      font-size: 11px;
+      color: #64748b;
+      cursor: pointer;
+      padding: 0 18px 4px;
+      display: block;
+      text-decoration: underline;
+    }
+    .fallback-toggle:hover { color: #94a3b8; }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 18px 14px;
+    }
+    .stat-card {
+      background: #1e2333;
+      border: 1px solid #2d3748;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: .06em; }
+    .stat-value { font-size: 18px; font-weight: 700; color: #e2e8f0; margin-top: 2px; }
+    .stat-value.purple { color: #a78bfa; }
+    .stat-value.green  { color: #4ade80; }
+    .stat-value.blue   { color: #60a5fa; }
+    .stat-value.orange { color: #fb923c; }
+
+    /* Current site */
+    .current-site-card {
+      margin: 0 18px 14px;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+    }
+    .current-site-card .cs-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+    .current-site-card .cs-domain { font-size: 14px; font-weight: 600; color: #a78bfa; margin: 2px 0 4px; }
+    .current-site-card .cs-meta { color: #94a3b8; }
+
+    /* Divider */
+    .divider { height: 1px; background: #1e2333; margin: 0 18px 14px; }
+
+    /* Action buttons */
+    .actions { padding: 0 18px 18px; display: flex; gap: 8px; }
+    .btn-sync {
+      flex: 1;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px;
+      transition: opacity .2s;
+    }
+    .btn-sync:hover { opacity: .85; }
+
+    /* Toast */
+    .toast {
+      background: #22c55e;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      text-align: center;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-icon">📡</div>
+    <div>
+      <h1>ContentTrack</h1>
+      <p>Auto-tracking your browsing</p>
+    </div>
+  </div>
+
+  <div class="status-row">
+    <div class="dot" id="status-dot"></div>
+    <span id="status-label">Checking...</span>
+  </div>
+
+  <!-- Auto-fetched identity -->
+  <div class="section">
+    <label>Tracking Identity</label>
+    <div class="identity-card">
+      <div>
+        <div class="identity-email" id="identity-email">Detecting...</div>
+        <div class="identity-ip" id="identity-ip"></div>
+      </div>
+      <span class="identity-badge pending" id="identity-badge">...</span>
+    </div>
+  </div>
+
+  <!-- Fallback: manual email (shown if identity API fails) -->
+  <span class="fallback-toggle" id="fallback-toggle" style="display:none">✏️ Set email manually</span>
+  <div class="fallback-section" id="fallback-section">
+    <label>Manual Email Override</label>
+    <div class="input-row">
+      <input type="email" id="email-input" placeholder="you@example.com">
+      <button class="btn-set" id="btn-set-email">Set</button>
+    </div>
+    <div id="email-display" style="font-size:12px;color:#64748b;margin-top:6px;"></div>
+  </div>
+
+  <!-- Current Site -->
+  <div class="current-site-card" id="current-site-card">
+    <div class="cs-label">Active Tab</div>
+    <div class="cs-domain" id="cs-domain">—</div>
+    <div class="cs-meta" id="cs-meta">No data yet</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Session Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Domains Today</div>
+      <div class="stat-value purple" id="stat-domains">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Clicks</div>
+      <div class="stat-value green" id="stat-clicks">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Scroll</div>
+      <div class="stat-value blue" id="stat-scroll">0%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Time</div>
+      <div class="stat-value orange" id="stat-time">0m</div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="actions">
+    <button class="btn-sync" id="btn-sync">⚡ Sync Now</button>
+  </div>
+
+  <div id="toast-area"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
