@@ -7,7 +7,7 @@
  * - Sync Now triggers background flush.
  */
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'http://https://website-content-and-time-analyzer.onrender.com';
 
 // ── DOM refs ───────────────────────────────────────────────────────────────────
 const identityEmail   = document.getElementById('identity-email');
