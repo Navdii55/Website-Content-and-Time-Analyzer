@@ -12,7 +12,7 @@
  *  7. No manual email entry required — identity API handles it automatically.
  */
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://website-content-and-time-analyzer.onrender.com';
 
 // ── In-memory state ───────────────────────────────────────────────────────────
 let accumulator = {};   // { [domain]: { time, pages, clicks, maxScroll, bounceCount, totalVisits } }
